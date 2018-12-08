@@ -1,4 +1,4 @@
-# diet_management
+# Fitappku
 
 > Diet management system
 
