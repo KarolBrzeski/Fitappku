@@ -4,11 +4,11 @@
         <li class="collection-header">
             <h4>List of meals</h4>
         </li>
-        <li v-for="diet in diets" v-bind:key="diet.id" class="collection-item">
-            <router-link v-bind:to="{name: 'view-meal', params: {meal_id: diet.id}}">
-                <span class="diet-title">{{diet.name}}</span>
-                <div class="chip green">{{diet.type}}</div>
-                <div class="chip blue">{{diet.diet_number}}</div>
+        <li v-for="diet in diets" v-bind:key="diet.diet_id" class="collection-item">
+            <router-link v-bind:to="{name: 'view-meal', params: {diet_id: diet.diet_id}}">
+                <span class="diet-title">{{diet.title}}</span>
+                <div class="chip green">{{diet.isActive}}</div>
+                <div class="chip blue">{{diet.create_date | dateFormat('YYYY.MM.DD')}}</div>
             </router-link>
         </li>
     </ul>
@@ -21,7 +21,12 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import VueFilterDateFormat from 'vue-filter-date-format'
 import db from '../config/firebaseInit'
+
+Vue.use(VueFilterDateFormat)
+
 export default {
     name: 'dashboard',
     data() {
@@ -30,22 +35,17 @@ export default {
         }
     },
     created() {
-        db.collection("diet").where("diet_number", "==", 1)
+
+        db.collection("diet")
             .get().then(querySnapshot => {
                 querySnapshot.forEach(doc => {
                     const data = {
                         'id': doc.id,
-                        'type': doc.data().type,
-                        'diet_number': doc.data().diet_number,
-                        'date': doc.data().date,
-                        'name': doc.data().name,
-                        'energy': doc.data().energy,
-                        'protein': doc.data().protein,
-                        'fat': doc.data().fat,
-                        'carbohydrates': doc.data().carbohydrates,
-                        'components_man': doc.data().components_man,
-                        'components_woman': doc.data().components_woman,
-                        'description': doc.data().description
+                        'diet_id': doc.data().diet_id,
+                        'title': doc.data().title,
+                        'isActive': doc.data().isActive,
+                        'create_date': doc.data().create_date,
+                        'day_number': doc.data().days.day.day_number
                     };
                     console.log('data', data);
                     this.diets.push(data)
@@ -54,8 +54,9 @@ export default {
     }
 }
 </script>
+
 <style>
-.diet-title{
+.diet-title {
     color: #535353;
     font-weight: bold;
     padding-right: 10px;

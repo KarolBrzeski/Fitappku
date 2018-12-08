@@ -26,7 +26,7 @@ export default new Router({
         name: 'edit-meal',
         component: EditMeal
     }, {
-        path: '/:meal_id',
+        path: '/:diet_id',
         name: 'view-meal',
         component: ViewMeal
     }]
